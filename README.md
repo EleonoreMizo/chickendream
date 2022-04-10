@@ -7,9 +7,15 @@ This plug-in implements a realistic film grain generator described in the follow
 * Alasdair Newson, Julie Delon, Bruno Galerne, *A Stochastic Film Grain Model for Resolution-Independent Rendering*, Computer Graphics Forum, Wiley, 2017, https://hal.archives-ouvertes.fr/hal-01520260
 * Alasdair Newson, Noura Faraj, Julie Delon, Bruno Galerne, *Realistic Film Grain Rendering*, Image Processing On Line 7, 2017, pp. 165–183, https://www.ipol.im/pub/art/2017/192
 
-Warning: the algorithm is very slow and can take several seconds for a single FHD frame.
+Warning: the algorithm is very slow and can take several seconds (multi-threaded) for a single FHD frame.
 
 The generated grain is quite significant, but you can blend the output with the input picture to attenuate the effect.
+
+Main differences with the original algorithm:
+* Sampling of the gaussian filter is done with a quasirandom sequence instead of pure random points. This should give a better uniformity.
+* Option: rectangular single-pixel filter instead of the gaussian filter
+* The formula calculating lambda from the grain size standard deviation has been fixed and should not cause any brightness issues anymore.
+* For large lambda (high luminance), the Poisson-distributed random variable generation uses an approximation instead of the inverse transform sampling which becomes slow and inaccurate.
 
 # Compilation
 
@@ -49,7 +55,7 @@ fmtc_transfer (transs="linear", transd="srgb")
 
 * **`sigma`** (0.35): Radius of the gaussian kernel for the vision filter. Valid range: [0 ; 1]. The larger the radius, the smoother the picture. Smallest values are more prone to aliasing. 0 is a special value indicating that a single-pixel rectangular filter should be used instead of a gaussian. For grains with a small radius (standard use), this should be the fastest option, visually equivalent to `sigma = 0.3`, offering an excellent quality (minimum leaking between adjascent pixels).
 
-* **`res`** (1000): Filter resolution, directly translating into output data bitdepth. Must be greater than 0. 1024 is equivalent to a 10-bit output. Keep in mind that the pixel values are linear. The higher the resolution, the slower the algorithm. Large grain require a smaller `res`.
+* **`res`** (1000): Filter resolution, directly translating into output data bitdepth. Must be greater than 0. 1024 is equivalent to a 10-bit output. Keep in mind that the pixel values are linear. The higher the resolution, the slower the algorithm. Large grains require a smaller `res`.
 
 * **`rad`** (0.025): Average grain radius, in pixels. Must be greater than 0. The smaller the grains, the higher the picture fidelity (given a high enough `res`), and the slower the processing.
 
