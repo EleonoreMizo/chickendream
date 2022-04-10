@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\AvstpFinder.cpp" />
+    <ClCompile Include="..\..\..\src\AvstpWrapper.cpp" />
+    <ClCompile Include="..\..\..\src\fstb\CpuId.cpp">
+      <Filter>fstb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fgrn\GenGrain.cpp">
+      <Filter>fgrn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fstb\ToolsSimd.cpp">
+      <Filter>fstb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fgrn\GrainDensity.cpp">
+      <Filter>fgrn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fgrn\VisionFilter.cpp">
+      <Filter>fgrn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fgrn\CellCache.cpp">
+      <Filter>fgrn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fstb\ToolsAvx2.cpp">
+      <Filter>fstb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fstb\ToolsSse2.cpp">
+      <Filter>fstb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fstb\fnc_fstb.cpp">
+      <Filter>fstb</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\chkdr\GrainProc.cpp">
+      <Filter>chkdr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\chkdr\AvstpScopedDispatcher.cpp">
+      <Filter>chkdr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\fgrn\GenGrain_avx.cpp">
+      <Filter>fgrn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\chkdr\CpuOptBase.cpp">
+      <Filter>chkdr</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\avstp.h" />
+    <ClInclude Include="..\..\..\src\AvstpFinder.h" />
+    <ClInclude Include="..\..\..\src\AvstpWrapper.h" />
+    <ClInclude Include="..\..\..\src\fstb\AllocAlign.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\AllocAlign.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\ArrayAlign.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\ArrayAlign.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\CpuId.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\def.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\fnc.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\fnc.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\SingleObj.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\SingleObj.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\ToolsAvx2.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\ToolsAvx2.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\ToolsSse2.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\ToolsSse2.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Hash.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Hash.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\GenGrain.h">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Approx.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Approx.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Poly.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Poly.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Scale.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Scale.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\ToolsSimd.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\ToolsSimd.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Vf32.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Vf32.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Vs32.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Vs32.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Vu32.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\Vu32.hpp">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\GrainDensity.h">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\UtilPrng.h">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\UtilPrng.hpp">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fstb\VecAlign.h">
+      <Filter>fstb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\VisionFilter.h">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\PointList.h">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\PointList.hpp">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\VisionFilter.hpp">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\Cell.h">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\Cell.hpp">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\CellCache.h">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\chkdr\GrainProc.h">
+      <Filter>chkdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\chkdr\AvstpScopedDispatcher.h">
+      <Filter>chkdr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\fgrn\GenGrain.hpp">
+      <Filter>fgrn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\chkdr\CpuOptBase.h">
+      <Filter>chkdr</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="fstb">
+      <UniqueIdentifier>{D8CC7E3E-6666-409E-83DE-EAA3DB0D7F4C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fgrn">
+      <UniqueIdentifier>{e641a17f-4162-458f-b66a-d6aeb3f5b20d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="chkdr">
+      <UniqueIdentifier>{dfda2209-c42f-4870-9c6c-1e54d6f26f86}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

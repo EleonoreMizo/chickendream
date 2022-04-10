@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="vsutl">
+      <UniqueIdentifier>{0A31C83F-C919-4FB2-87C3-F8D43245F5B6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="avs">
+      <UniqueIdentifier>{B98E3834-68F5-4338-AE26-99F6B5623C19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="avsutl">
+      <UniqueIdentifier>{7847F228-375C-4A0F-909D-9B04C06DE3B3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="chkdravs">
+      <UniqueIdentifier>{9ebd1a3d-c77d-44db-985d-eeb6923dfc5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="chkdrvs">
+      <UniqueIdentifier>{11762189-b7c0-4e79-8ccf-66e30e3cda0f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\avs\alignment.h">
+      <Filter>avs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avs\capi.h">
+      <Filter>avs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avs\config.h">
+      <Filter>avs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avs\cpuid.h">
+      <Filter>avs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avs\filesystem.h">
+      <Filter>avs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avs\minmax.h">
+      <Filter>avs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avs\posix.h">
+      <Filter>avs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avs\types.h">
+      <Filter>avs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avs\win.h">
+      <Filter>avs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avsutl\PlaneProcessor.h">
+      <Filter>avsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avsutl\PlaneProcCbInterface.h">
+      <Filter>avsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avsutl\PlaneProcMode.h">
+      <Filter>avsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avsutl\TFlag.h">
+      <Filter>avsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avsutl\fnc.h">
+      <Filter>avsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avsutl\CsPlane.h">
+      <Filter>avsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avsutl\fnc.hpp">
+      <Filter>avsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avsutl\VideoFilterBase.h">
+      <Filter>avsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\FilterBase.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\fnc.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\FrameRefSPtr.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\NodeRefSPtr.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\ObjRefSPtr.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\ObjRefSPtr.hpp">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\PlaneProcCbInterface.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\PlaneProcessor.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\PlaneProcMode.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\Redirect.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\vsutl\Redirect.hpp">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\avisynth.h" />
+    <ClInclude Include="..\..\..\src\vsutl\FuncRefSPtr.h">
+      <Filter>vsutl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\VapourSynth4.h" />
+    <ClInclude Include="..\..\..\src\chkdravs\function_names.h">
+      <Filter>chkdravs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\chkdrvs\version.h">
+      <Filter>chkdrvs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\chkdrvs\Grain.h">
+      <Filter>chkdrvs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\chkdravs\Grain.h">
+      <Filter>chkdravs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\avsutl\fnc_avsutl.cpp">
+      <Filter>avsutl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\avsutl\CsPlane.cpp">
+      <Filter>avsutl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\avsutl\VideoFilterBase.cpp">
+      <Filter>avsutl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\vsutl\FilterBase.cpp">
+      <Filter>vsutl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main-avs.cpp" />
+    <ClCompile Include="..\..\..\src\main-vs.cpp" />
+    <ClCompile Include="..\..\..\src\vsutl\fnc_vsutl.cpp">
+      <Filter>vsutl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\vsutl\PlaneProcCbInterface_vs.cpp">
+      <Filter>vsutl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\vsutl\PlaneProcessor_vs.cpp">
+      <Filter>vsutl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\avsutl\PlaneProcCbInterface_avs.cpp">
+      <Filter>avsutl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\avsutl\PlaneProcessor_avs.cpp">
+      <Filter>avsutl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\chkdrvs\Grain_vs.cpp">
+      <Filter>chkdrvs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\chkdravs\Grain_avs.cpp">
+      <Filter>chkdravs</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
