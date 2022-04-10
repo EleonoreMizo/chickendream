@@ -7,6 +7,8 @@ This plug-in implements a realistic film grain generator described in the follow
 * Alasdair Newson, Julie Delon, Bruno Galerne, *A Stochastic Film Grain Model for Resolution-Independent Rendering*, Computer Graphics Forum, Wiley, 2017, https://hal.archives-ouvertes.fr/hal-01520260
 * Alasdair Newson, Noura Faraj, Julie Delon, Bruno Galerne, *Realistic Film Grain Rendering*, Image Processing On Line 7, 2017, pp. 165–183, https://www.ipol.im/pub/art/2017/192
 
+![Example: original / with mild grain / with insanely huge grain](doc/grain.png "Example: original / with mild grain / with insanely huge grain")
+
 Warning: the algorithm is very slow and can take several seconds (multi-threaded) for a single FHD frame.
 
 The generated grain is quite significant, but you can blend the output with the input picture to attenuate the effect.
