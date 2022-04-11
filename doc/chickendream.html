@@ -1,0 +1,358 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang='en' xml:lang='en' xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ChickenDream&nbsp;&mdash;&nbsp; realistic film grain generator for Vapoursynth and Avisynth+</title>
+<link rel="stylesheet" type="text/css" href="vapourdoc.css" />
+</head>
+
+<body><div class="global">
+
+<h1>ChickenDream&nbsp;&mdash;&nbsp;realistic film grain generator<br />for Vapoursynth and Avisynth+</h1>
+
+<h2>Abstract</h2>
+
+<table class="n">
+<tr><td class="n"><b>Authors:     </b></td><td class="n">&nbsp;</td><td class="n">Firesledge (aka Cretindesalpes)</td></tr>
+<tr><td class="n"><b>Version:     </b></td><td class="n">&nbsp;</td><td class="n">r1</td></tr>
+<tr><td class="n"><b>Download:    </b></td><td class="n">&nbsp;</td><td class="n"><a href="http://ldesoras.free.fr/prod.html#src_chickendream">http://ldesoras.free.fr/prod.html</a></td></tr>
+<tr><td class="n"><b>Category:    </b></td><td class="n">&nbsp;</td><td class="n">Artistic effect</td></tr>
+<tr><td class="n"><b>Requirements:</b></td><td class="n">&nbsp;</td><td class="n"><a href="http://www.vapoursynth.com/">Vapoursynth r55</a> or <a href="https://avs-plus.net/">Avisynth+ 3.7.0</a></td></tr>
+<tr><td class="n"><b>License:     </b></td><td class="n">&nbsp;</td><td class="n"><a href="http://www.wtfpl.net/">WTFPL</a></td></tr>
+</table>
+
+
+
+<h2>Table of contents</h2>
+
+<ol style="list-style-type:upper-roman;">
+<li class="tcont"><a href="#intro">Introduction</a></li>
+	<ol style="list-style-type:armenian; margin-top:0.5em;">
+	<li><a href="#intro-desc">Description</a></li>
+	<li><a href="#tech-ref">Technical reference</a></li>
+	</ol>
+<li class="tcont"><a href="#usage">Usage</a>
+	<ol style="list-style-type:armenian; margin-top:0.5em;">
+	<li><a href="#loading">Loading</a></li>
+	<li><a href="#examples">Examples for Vapoursynth</a></li>
+	<li><a href="#examples">Examples for Avisynth+</a></li>
+	<li><a href="#compiling">Compiling from the source code</a></li>
+	</ol>
+</li>
+<li class="tcont"><a href="#description">Filter description</a>
+	<ol style="list-style-type:armenian; margin-top:0.5em;">
+	<li><a href="#grain">grain</a></li>
+	</ol>
+</li>
+<li class="tcont"><a href="#troubleshooting">Troubleshooting</a></li>
+<li class="tcont"><a href="#changelog">Changelog</a></li>
+</ol>
+
+
+
+<h2><a id="intro"></a>I) Introduction</h2>
+
+<h3><a id="intro-desc"></a>Description</h3>
+
+<p>ChickenDream is a plug-in for Vapoursynth and Avisynth+ implementing a
+realistic film grain generator.</p>
+
+<figure>
+<img src="grain.png" alt="Example: original / with mild grain / with insanely huge grain" width="768" />
+<figcaption>Example: original / with mild grain / with insanely huge grain.</figcaption>
+</figure>
+
+<p>The grain model is based on the microscopic reproduction of a silver halide
+photographic film.
+A picture may contain billions of particles which are transparent or opaque to
+light, depending on their exposure.
+The effect does not modify the curve of the input picture, it only adds
+grain corresponding to the light intensity.
+If you want to emulate a S-shaped film curve too, do it before adding
+grain.</p>
+
+<p>If the generated grain is too strong for your taste, you can blend the
+filter output with the input picture to attenuate the effect.</p>
+
+<p>Warning: the algorithm is very slow and can take several seconds
+(multi-threaded) for a single FHD frame.</p>
+
+
+<h3><a id="tech-ref"></a>Technical reference</h3>
+
+<p>The grain model and the basis of the algorithm come from the following
+papers:</p>
+<ul>
+<li>Alasdair Newson, Julie Delon, Bruno Galerne,<br /><i><a
+href="https://hal.archives-ouvertes.fr/hal-01520260">A Stochastic Film Grain
+Model for Resolution-Independent Rendering</a></i>,<br />Computer Graphics
+Forum, Wiley, 2017</li>
+<li>Alasdair Newson, Noura Faraj, Julie Delon, Bruno Galerne,<br /><i><a
+href="https://www.ipol.im/pub/art/2017/192">Realistic Film Grain
+Rendering</a></i>,<br />Image Processing On Line 7, 2017, pp. 165–183</li>
+</ul>
+
+<p>Main differences with the original algorithm:</p>
+<ul>
+<li>Sampling of the gaussian filter is done with a quasirandom sequence instead of pure random points. This should give a better uniformity.</li>
+<li>Option: rectangular single-pixel filter instead of the gaussian filter.</li>
+<li>The formula calculating lambda from the grain size standard deviation has been fixed and should not cause any brightness issues anymore.</li>
+<li>For large lambda (high luminance), the Poisson-distributed random variable generation uses an approximation instead of the inverse transform sampling which becomes slow and inaccurate.</li>
+</ul>
+<p>There were also several speed optimisations.</p>
+
+
+<h2><a id="usage"></a>II) Usage</h2>
+
+<h3><a id="loading"></a>Loading ChickenDream</h3>
+
+<p>Using the Python 3.8 interface (or a higher version, it depends on your
+Vapoursynth version):</p>
+
+<pre class="src">import vapoursynth as vs
+core = vs.core
+core.std.LoadPlugin (path=r'C:\path\chickendream.dll')</pre>
+
+<p>Of course you can avoid the <code>LoadPlugin</code> command by copying the
+plug-in file to the autoloading directory.
+Check the Vapoursynth manual for more information.</p>
+
+
+<h3><a id="examples-vs"></a>Examples for Vapoursynth</h3>
+
+<h4>A basic example</h4>
+
+<p>Requires <a href="http://ldesoras.free.fr/prod.html#src_fmtconv">fmtconv</a>:</p>
+
+<pre class="src"># Load Vapoursynth
+import vapoursynth as vs
+core = vs.core
+
+# Load the plug-ins
+core.std.LoadPlugin (path=r'C:\path\chickendream.dll')
+core.std.LoadPlugin (path=r'C:\path\fmtconv.dll')
+
+# Mid gray picture, assuming it is sRGB.
+c = core.std.BlankClip (width=256, height=256, format=vs.GRAY8, color=[128])
+
+# Conversion to linear light in 32-bit floating point format
+c = c.fmtc.transfer (transs="srgb", transd="linear", bits=32)
+
+# Apply the grain
+c = c.chkdr.grain ()
+
+# Back to gamma-compressed colorspace (sRGB)
+c = c.fmtc.transfer (transs="linear", transd="srgb")
+
+# Send the processed clip to the calling process
+c.set_output ()</pre>
+
+
+
+<h3><a id="examples-avs"></a>Examples for Avisynth+</h3>
+
+<h4>The same basic example</h4>
+
+<p>Requires <a href="http://ldesoras.free.fr/prod.html#src_fmtconv">fmtconv</a>:</p>
+
+<pre class="src"># Load the plug-in
+LoadPlugin ("C:\path\chickendream.dll")
+LoadPlugin ("C:\path\fmtconv.dll")
+
+# Mid gray picture, assuming it is sRGB.
+BlankClip (width=256, height=256, pixel_type="Y8", color=$808080)
+
+# Conversion to linear light in 32-bit floating point format
+fmtc_transfer (transs="srgb", transd="linear", bits=32)
+
+# Apply the grain
+chkdr_grain ()
+
+# Back to gamma-compressed colorspace (sRGB)
+fmtc_transfer (transs="linear", transd="srgb")</pre>
+
+
+<h3><a id="compiling"></a>Compiling from the source code</h3>
+
+<h4>Visual C++</h4>
+
+<p>Visual Studio 2019 or later is required, previous versions are
+not supported anymore.
+Just load <code>build/win/chickendreams.sln</code>.
+Go to <em>Build</em> &rarr; <em>Configuration Manager</em>, select the desired
+configuration (most likely <em>Release</em>, <em>x64</em>) then go to
+<em>Build</em> &rarr; <em>Build Solution</em>.
+The dll is in the <code>chickendream/<i>(configuration)</i>/</code>
+subdirectory.</p>
+
+<p>You can also import all the <code>*.cpp</code>, <code>*.h</code> and
+<code>*.hpp</code> files located in the <code>src</code> directory and its
+subfolders. Then:
+
+<ul>
+<li>Add <code>.</code> (the <code>src</code> directory) as include path.</li>
+<li>For the whole project, enable the SS2 instruction set.</li>
+<li>Enable the AVX2 instruction set for the <code>*.cpp</code> files containing <code>avx2</code> in their name, and the AVX set for the <code>avx</code> files.</li>
+<li>Enable optimizations maximizing speed and “any suitable” functions for inlining.</li>
+</ul>
+
+<h4>GNU/Linux and other Unix-like systems</h4>
+
+<p>On Linux and similar GNU-based systems (including MSYS2 and Cygwin), the
+<code>build</code> directory contains autotools settings:</p>
+<pre class="src">cd build/unix
+./autogen.sh
+./configure
+make
+make install</pre>
+<p>You can add some options to the <code>configure</code> command:</p>
+<ul>
+<li><code>--enable-debug</code> to activate debugging code</li>
+<li><code>--enable-clang</code> to use Clang instead of the default compiler which is usually GCC</li>
+</ul>
+<p>Only the Vapoursynth plug-in can be built in the GNU-based environment.</p>
+
+
+<h2><a id="description"></a>III) Filters description</h2>
+
+<h3><a id="grain"></a>grain</h3>
+
+<table class="n" width="100%">
+<tr><th class="p">Vapoursynth</th><th class="p">Avisynth+</th></tr>
+<tr>
+<td class="n"><pre class="proto">
+chkdr.grain (
+	clip  : vnode     ;
+	sigma : float: opt; (0.35)
+	res   : int  : opt; (1024)
+	rad   : float: opt; (0.025)
+	dev   : float: opt; (0)
+	seed  : int  : opt; (12345)
+	cf    : int  : opt; (False)
+	cp    : int  : opt; (False)
+	cpuopt: int  : opt; (-1)
+)</pre></td>
+<td class="n"><pre class="proto">chkdr_grain (
+	clip   c,
+	float  sigma  (0.35),
+	int    res    (1024),
+	float  rad    (0.025),
+	float  dev    (0),
+	int    seed   (12345),
+	int    cf     (False),
+	int    cp     (False),
+	int    cpuopt (-1)
+)</pre></td>
+</tr>
+</table>
+
+<p>This function takes a picture and adds grain to it with the specified
+characteristics.
+For correct results, the picture should be in <strong>linear light</strong>,
+not gamma-compressed.
+This is important for the grain balance between highlights and shadows.
+Values out of the [0&nbsp;;1] range are clipped beforehand.
+The output format is the same as the input.</p>
+<p>The function supports internal multi-threading with <a
+href="http://ldesoras.free.fr/prod.html#src_avstp">AVSTP</a>.</p>
+
+<h4>Parameters</h4>
+
+<p class="var">clip</p>
+<p>The input clip. Mandatory.
+Supported input formats:</p>
+<ul>
+<li>Gray (Y) and planar RGB colorspaces.</li>
+<li>32-bit floating point only.</li>
+</ul>
+
+<p class="var">sigma</p>
+<p>Radius of the gaussian kernel for the vision filter.
+Valid range: [0&nbsp;; 1].
+The larger the radius, the smoother the picture.
+Smallest values are more prone to aliasing.
+0 is a special value indicating that a single-pixel rectangular filter should
+be used instead of a gaussian.
+For grains with a small radius (standard use), this should be the fastest
+option, visually equivalent to a <var>sigma</var> of 0.3, offering an
+excellent quality (minimum leaking between adjascent pixels).</p>
+
+<p class="var">res</p>
+<p>Vision filter resolution, greater than 0.
+The vision filter is a gaussian kernel that turns thousands of grains into
+a single light intensity, for a given pixel.
+However it would be very costly to exactly implement such a kernel.
+Therefore an approximation is used, by sampling the kernel using
+<var>res</var> points, whose distribution depends on the kernel density.
+Then each point is tested for its intersection with a grain.
+This leads to a quantified light intensity related to the number of points,
+directly translating into output data bitdepth.
+1024 is equivalent to a 10-bit output, but keep in mind that the pixel values
+are linear at this stage.
+The higher the resolution, the slower the algorithm.
+Large grains require a smaller <var>res</var>.</p>
+
+<p class="var">rad</p>
+<p>Average grain radius, in pixels.
+Must be greater than 0.
+The smaller the grains, the higher the picture fidelity (given a high enough
+<var>res</var>), and the slower the processing.</p>
+
+<p class="var">dev</p>
+<p>Standard deviation for the log-norm distribution of the grain radius, in
+[0&nbsp;; 1] range.
+Offers a more realistic result when the grains are big enough to be
+individually visible, then 0.25 is a good value.
+Otherwise, keep it to 0 to avoid wasting processing power.</p>
+
+<p class="var">seed</p>
+<p>Seed for the random generator.
+A fixed seed gives reproductible results; changing the seed helps to build
+different variations on the same stream with the same parameters.</p>
+
+<p class="var">cf</p>
+<p>Indicates that the seed is kept constant for all the frames.</p>
+
+<p class="var">cp</p>
+<p>Indicates that the seed is kept constant for all the planes of a single
+frame.
+This may slightly reduce the “colored noise” effect on RGB pictures, depending
+on the content.</p>
+
+<p class="var">cpuopt</p>
+<p>Limits the CPU instruction set.
+-1: automatic (no limitation, depends on the host hardware),
+0: default instruction set only (depends on the compilation settings),
+1: limit to SSE2,
+7: limit to AVX.</p>
+
+
+
+<h2><a id="troubleshooting"></a>IV) Troubleshooting</h2>
+
+<p>You can reach the author on the
+<a href="https://forum.doom9.org/forumdisplay.php?f=82">Vapoursynth</a> or
+<a href="https://forum.doom9.org/forumdisplay.php?f=69">Avisynth</a> sections
+of the Doom9 forums.</p>
+<p>You can also
+<a href="https://github.com/EleonoreMizo/chickendream/issues">open an
+issue</a> on Github repository for the project.</p>
+
+
+
+<h2><a id="changelog"></a>V) Changelog</h2>
+
+<p><b>r1, 2022-04-11</b></p>
+<ul>
+<li>Initial release.</li>
+</ul>
+
+
+
+<p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
+
+</div></body>
+</html>
+
+
