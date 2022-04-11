@@ -21,7 +21,7 @@ Main differences with the original algorithm:
 
 # Compilation
 
-* Windows: open `chickendream\build\win\chickendream.sln` in Visual Studio, `Build` -> `Configuration Manager`, select the desired configuration (most likely x64 / Release) then go to `Build` -> `Build Solution`. The dll is in the `chickendream\`(configuration) subdirectory.
+* Windows: open `chickendream\build\win\chickendream.sln` in Visual Studio, `Build` -> `Configuration Manager`, select the desired configuration (most likely *Release x64*) then go to `Build` -> `Build Solution`. The dll is in the `chickendream\`*(configuration)*`\` subdirectory.
 * Linux/Mingw: `cd build/win ; ./autogen.sh ; ./configure --enable-clang ; make`. Clang is not mandatory but a bit faster than GCC.
 
 # Usage
@@ -69,4 +69,4 @@ fmtc_transfer (transs="linear", transd="srgb")
 
 * **`cp`** (False): Indicates that the seed is kept constant for all the planes of a single frame. This may slightly reduce the “colored noise” effect on RGB pictures, depending on the content.
 
-* **`cpuopt`** (-1): 0 = no specific CPU optimisation, 1 = SSE2, 7 = AVX. -1: maximum available optimisations on the running hardware.
+* **`cpuopt`** (-1): 0 = no specific CPU optimisation, 1 = SSE2, 7 = AVX, -1 = maximum available optimisations on the host hardware.
