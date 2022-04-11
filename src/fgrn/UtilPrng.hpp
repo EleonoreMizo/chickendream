@@ -52,6 +52,15 @@ float	UtilPrng::gen_uniform (uint32_t rnd_state) noexcept
 	const auto     val = float (x_u) * mul;
 
 	return val;
+
+/*** To do:
+	Check if this cheaper formula is valid as an alternate hash for generating
+	grain coordinates and radius (use at least the 17 lowest bits):
+	a =  a ^ (a >>  4);
+	a = (a ^ 0xDEADBEEF) + (a << 5);
+	a =  a ^ (a >> 11);
+	Source: Bob Jenkins, http://burtleburtle.net/bob/hash/integer.html
+***/
 }
 
 
