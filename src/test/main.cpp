@@ -120,10 +120,12 @@ void	Histogram::print () const
 	{
 		for (int x = 0; x < _sz; ++x)
 		{
-			const auto     bar_h = (height * 2 * _hist [x] + r_ofs) / n_max;
+			const auto     v     = _hist [x];
+			const auto     bar_h = (height * 2 * v + r_ofs) / n_max;
 			// For code page 850
 			const auto     c     =
 				  (bar_h >= y * 2 + 1) ? '\xDB' // Could be '#'
+				: (v == 0 && y == 0  ) ? '_'
 				: (bar_h >= y * 2    ) ? '\xDC' // Could be '_'
 				:                        ' ';
 			printf ("%c", c);
