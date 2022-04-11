@@ -75,7 +75,7 @@ Grain::Grain (const ::VSMap &in, ::VSMap &out, void *user_data_ptr, ::VSCore &co
 	_plane_processor.set_filter (in, out, _vi_out, true);
 
 	const auto     sigma   = float (get_arg_flt (in, out, "sigma", 0.35f));
-	const auto     res     =        get_arg_int (in, out, "res"  , 1000);
+	const auto     res     =        get_arg_int (in, out, "res"  , 1024);
 	const auto     rad     = float (get_arg_flt (in, out, "rad"  , 0.025f));
 	const auto     dev     = float (get_arg_flt (in, out, "dev"  , 0));
 	const auto     seed    = uint32_t (get_arg_int (in, out, "seed" , 12345));

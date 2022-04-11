@@ -61,10 +61,10 @@ Grain::Grain (::IScriptEnvironment &env, const ::AVSValue &args)
 	}
 
 	const auto     sigma   = float (args [Param_SIGMA].AsFloat (0.35f));
-	const auto     res     =        args [Param_RES  ].AsInt (1000);
+	const auto     res     =        args [Param_RES  ].AsInt (1024);
 	const auto     rad     = float (args [Param_RAD  ].AsFloat (0.025f));
 	const auto     dev     = float (args [Param_DEV  ].AsFloat (0));
-	const auto     seed    = uint32_t (args [Param_SEED ].AsInt (12345));
+	const auto     seed    = uint32_t (args [Param_SEED].AsInt (12345));
 	const auto     cf_flag = args [Param_CF].AsBool (false);
 	const auto     cp_flag = args [Param_CP].AsBool (false);
 

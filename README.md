@@ -57,7 +57,7 @@ fmtc_transfer (transs="linear", transd="srgb")
 
 * **`sigma`** (0.35): Radius of the gaussian kernel for the vision filter. Valid range: [0 ; 1]. The larger the radius, the smoother the picture. Smallest values are more prone to aliasing. 0 is a special value indicating that a single-pixel rectangular filter should be used instead of a gaussian. For grains with a small radius (standard use), this should be the fastest option, visually equivalent to `sigma = 0.3`, offering an excellent quality (minimum leaking between adjascent pixels).
 
-* **`res`** (1000): Filter resolution, directly translating into output data bitdepth. Must be greater than 0. 1024 is equivalent to a 10-bit output. Keep in mind that the pixel values are linear. The higher the resolution, the slower the algorithm. Large grains require a smaller `res`.
+* **`res`** (1024): Filter resolution, directly translating into output data bitdepth. Must be greater than 0. 1024 is equivalent to a 10-bit output. Keep in mind that the pixel values are linear. The higher the resolution, the slower the algorithm. Large grains require a smaller `res`.
 
 * **`rad`** (0.025): Average grain radius, in pixels. Must be greater than 0. The smaller the grains, the higher the picture fidelity (given a high enough `res`), and the slower the processing.
 
