@@ -1,4 +1,4 @@
-AC_INIT([ChickenDream film-grain generator], [r1], [http://ldesoras.free.fr], [chickendream], [http://ldesoras.free.fr])
+AC_INIT([ChickenDream film grain generator], [r1], [http://ldesoras.free.fr], [chickendream], [http://ldesoras.free.fr])
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([foreign no-dist-gzip dist-xz subdir-objects no-define])
