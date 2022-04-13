@@ -67,7 +67,7 @@ void	VisionFilter::build_filter (float sigma, float grain_radius_avg, float grai
 	// Approximation of an upper bound for the grain radius. This is a trade-
 	// off between exhaustivity (accuracy) and performance.
 	const auto     expected_grain_rad =
-		grain_radius_avg * expf (grain_radius_stddev * 2);
+		grain_radius_avg * expf (grain_radius_stddev * 3);
 
 	// Filter: limits the distance from the center to 4 times the standard
 	// deviation. Again, an accuracy/performance trade-off.
