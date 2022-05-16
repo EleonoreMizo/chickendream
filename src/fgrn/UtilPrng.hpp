@@ -60,6 +60,12 @@ float	UtilPrng::gen_uniform (uint32_t rnd_state) noexcept
 	a = (a ^ 0xDEADBEEF) + (a << 5);
 	a =  a ^ (a >> 11);
 	Source: Bob Jenkins, http://burtleburtle.net/bob/hash/integer.html
+
+	Another thing to check:
+	union Combo { float _f; uint32_t _i; };
+	Combo val;
+	val._i = (127 << 23) | (x_u >> 9);
+	return val._f - 1.f;
 ***/
 }
 
