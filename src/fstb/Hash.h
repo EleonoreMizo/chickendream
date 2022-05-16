@@ -69,6 +69,8 @@ public:
 	               hash (Vu32 x) noexcept;
 	static fstb_FORCEINLINE constexpr uint32_t
 	               hash_inv (uint32_t x) noexcept;
+	static fstb_FORCEINLINE Vu32
+	               hash_inv (Vu32 x) noexcept;
 
 	static fstb_FORCEINLINE constexpr uint64_t
 	               hash (uint64_t x) noexcept;
