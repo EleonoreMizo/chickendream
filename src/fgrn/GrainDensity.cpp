@@ -75,7 +75,7 @@ void	GrainDensity::reset (int w, int h, float grain_radius_avg, float grain_radi
 	// Expected value of a log-norm variable is exp (log_mu + 0.5 * sigma^2)
 	// Expected value for its square is exp (2 * log_mu + 2 * sigma^2)
 	// (found by integrating x^2 * PDF_lognorm(x) from 0 to +inf)
-	_lambda_mul = float (1.0 / (
+	_lambda_mul = float (-1.0 / (
 		  fstb::PI
 		* fstb::sq (grain_radius_avg)
 		* expf (2 * fstb::sq (grain_radius_stddev))
@@ -259,7 +259,7 @@ float	GrainDensity::compute_q (int32_t * fstb_RESTRICT q_ptr, uint32_t * fstb_RE
 
 	const auto     luminance = *lum_ptr;
 	const auto     lum_neg   = fstb::limit (1.f - luminance, eps_val, 1.f);
-	const auto     lambda    = lambda_mul * logf (1.f / lum_neg);
+	const auto     lambda    = lambda_mul * logf (lum_neg);
 	const auto     q         = UtilPrng::gen_poisson (rnd_state, lambda);
 	rnd_state += 2;
 
@@ -287,8 +287,7 @@ fstb::Vf32	GrainDensity::compute_q (int32_t * fstb_RESTRICT q_ptr, uint32_t * fs
 	// if lambda is slightly negative (approx could cause log2 to be < 0).
 	// But it's better to play it safe and avoid assert() in debug.
 	const auto     zero      = fstb::Vf32::zero ();
-	const auto     lambda    =
-		max (lambda_mul_log2cst * log2 (lum_neg.rcp_approx2 ()), zero);
+	const auto     lambda    = max (lambda_mul_log2cst * log2 (lum_neg), zero);
 	const auto     q         = UtilPrng::gen_poisson (rnd_state, lambda);
 	rnd_state += fstb::Vu32 (2);
 

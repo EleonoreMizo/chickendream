@@ -122,7 +122,7 @@ private:
 	uint32_t       _pic_rnd_seed = 0;
 
 	// Multiplier for the lambda calculation
-	float          _lambda_mul = 1;
+	float          _lambda_mul = -1;
 
 	// Positive value (relative to 1) to avoid div/0 and too large grain amount
 	// for the brightest pixel value.
