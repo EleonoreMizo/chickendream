@@ -61,6 +61,7 @@ public:
 		Param_SEED,
 		Param_CF,
 		Param_CP,
+		Param_DRAFT,
 		Param_CPUOPT,
 
 		Param_NBR_ELT,

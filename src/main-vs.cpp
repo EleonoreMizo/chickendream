@@ -46,6 +46,7 @@ VS_EXTERNAL_API (void) VapourSynthPluginInit2 (::VSPlugin *plugin_ptr, const ::V
 		"seed:int:opt;"
 		"cf:int:opt;"
 		"cp:int:opt;"
+		"draft:int:opt;"
 		"cpuopt:int:opt;"
 	,	"clip:vnode;"
 	,	&vsutl::Redirect <chkdrvs::Grain>::create, nullptr, plugin_ptr

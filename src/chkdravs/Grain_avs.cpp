@@ -67,6 +67,7 @@ Grain::Grain (::IScriptEnvironment &env, const ::AVSValue &args)
 	const auto     seed    = uint32_t (args [Param_SEED].AsInt (12345));
 	const auto     cf_flag = args [Param_CF].AsBool (false);
 	const auto     cp_flag = args [Param_CP].AsBool (false);
+	const auto     draft_flag = args [Param_DRAFT].AsBool (false);
 
 	if (! chkdr::GrainProc::check_sigma (sigma))
 	{
@@ -94,7 +95,8 @@ Grain::Grain (::IScriptEnvironment &env, const ::AVSValue &args)
 	_plane_proc_uptr->set_proc_mode ("all");
 
 	_proc_uptr = std::make_unique <chkdr::GrainProc> (
-		sigma, res, rad, dev, seed, cf_flag, cp_flag, simd4_flag, avx_flag
+		sigma, res, rad, dev, seed, cf_flag, cp_flag, draft_flag,
+		simd4_flag, avx_flag
 	);
 }
 

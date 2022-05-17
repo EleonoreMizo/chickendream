@@ -48,7 +48,7 @@ class GrainProc
 
 public:
 
-	explicit       GrainProc (float sigma, int res, float rad, float dev, uint32_t seed, bool cf_flag, bool cp_flag, bool simd4_flag, bool avx_flag);
+	explicit       GrainProc (float sigma, int res, float rad, float dev, uint32_t seed, bool cf_flag, bool cp_flag, bool draft_flag, bool simd4_flag, bool avx_flag);
 	virtual        ~GrainProc () {}
 
 	void           process_plane (uint8_t *dst_ptr, ptrdiff_t dst_stride, const uint8_t *src_ptr, ptrdiff_t src_stride, int w, int h, int frame_idx, int plane_idx);
@@ -98,9 +98,10 @@ private:
 	fgrn::VisionFilter
 	               _filter;
 
-	uint32_t       _seed_base = 12345;
-	bool           _cf_flag   = false;  // Constant seed for all frames
-	bool           _cp_flag   = false;  // Constant seed for all planes of a frame
+	uint32_t       _seed_base  = 12345;
+	bool           _cf_flag    = false; // Constant seed for all frames
+	bool           _cp_flag    = false; // Constant seed for all planes of a frame
+	bool           _draft_flag = false;
 
 	AvstpWrapper & _avstp;
 

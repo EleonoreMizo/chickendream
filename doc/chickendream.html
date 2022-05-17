@@ -76,7 +76,9 @@ grain.</p>
 filter output with the input picture to attenuate the effect.</p>
 
 <p>Warning: the algorithm is very slow and can take several seconds
-(multi-threaded) for a single FHD frame.</p>
+(multi-threaded) for a single FHD frame.
+However, in some conditions, the draft mode can be a good compromise between
+speed and model accuracy.</p>
 
 
 <h3><a id="tech-ref"></a>Technical reference</h3>
@@ -231,6 +233,7 @@ chkdr.grain (
 	seed  : int  : opt; (12345)
 	cf    : int  : opt; (False)
 	cp    : int  : opt; (False)
+	draft : int  : opt; (False)
 	cpuopt: int  : opt; (-1)
 )</pre></td>
 <td class="n"><pre class="proto">chkdr_grain (
@@ -242,6 +245,7 @@ chkdr.grain (
 	int    seed   (12345),
 	int    cf     (False),
 	int    cp     (False),
+	int    draft  (False),
 	int    cpuopt (-1)
 )</pre></td>
 </tr>
@@ -320,6 +324,14 @@ frame.
 This may slightly reduce the “colored noise” effect on RGB pictures, depending
 on the content.</p>
 
+<p class="var">draft</p>
+<p>Sets ChickenDream in draft mode.
+Draft mode uses an approximation of the grain model and is much faster to
+render, but gives decent results only for a restricted set of parameter
+combinations.
+The draft mode automatically sets <var>sigma</var> to 0 and works correctly in
+the same conditions (small <var>rad</var> and <var>dev</var>).</p>
+
 <p class="var">cpuopt</p>
 <p>Limits the CPU instruction set.
 -1: automatic (no limitation, depends on the host hardware),
@@ -346,6 +358,7 @@ issue</a> on Github repository for the project.</p>
 <p><b>r2, 202x-xx-xx</b></p>
 <ul>
 <li>Allowed larger grain radius when using large standard deivation values.</li>
+<li>Added a <var>draft</var> parameter.</li>
 </ul>
 
 <p><b>r1, 2022-04-11</b></p>

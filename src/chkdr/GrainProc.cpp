@@ -39,13 +39,14 @@ namespace chkdr
 
 
 
-GrainProc::GrainProc (float sigma, int res, float rad, float dev, uint32_t seed, bool cf_flag, bool cp_flag, bool simd4_flag, bool avx_flag)
+GrainProc::GrainProc (float sigma, int res, float rad, float dev, uint32_t seed, bool cf_flag, bool cp_flag, bool draft_flag, bool simd4_flag, bool avx_flag)
 :	_simd4_flag (simd4_flag)
 ,	_avx_flag (avx_flag)
 ,	_filter (sigma, res, rad, dev)
 ,	_seed_base (seed)
 ,	_cf_flag (cf_flag)
 ,	_cp_flag (cp_flag)
+,	_draft_flag (draft_flag)
 ,	_avstp (AvstpWrapper::use_instance ())
 {
 	assert (check_sigma (sigma));
@@ -127,19 +128,22 @@ void	GrainProc::process_plane (uint8_t *dst_ptr, ptrdiff_t dst_stride, const uin
 	std::atomic_thread_fence (std::memory_order_seq_cst);
 
 	// Pass 2
-	proc_sptr->_generator.mt_prepare_pass2 ();
+	if (! _draft_flag)
+	{
+		proc_sptr->_generator.mt_prepare_pass2 ();
 
-	for (int t_cnt = 0; t_cnt < nbr_threads; ++t_cnt)
-	{
-		thread_arr [t_cnt] = std::thread ([t_cnt, &proc_sptr] () {
-			proc_sptr->_generator.mt_proc_pass2 (t_cnt);
-		});
+		for (int t_cnt = 0; t_cnt < nbr_threads; ++t_cnt)
+		{
+			thread_arr [t_cnt] = std::thread ([t_cnt, &proc_sptr] () {
+				proc_sptr->_generator.mt_proc_pass2 (t_cnt);
+			});
+		}
+		for (auto &thread : thread_arr)
+		{
+			thread.join ();
+		}
+		std::atomic_thread_fence (std::memory_order_seq_cst);
 	}
-	for (auto &thread : thread_arr)
-	{
-		thread.join ();
-	}
-	std::atomic_thread_fence (std::memory_order_seq_cst);
 
 #else // Multi-thread, AVSTP
 
@@ -153,7 +157,7 @@ void	GrainProc::process_plane (uint8_t *dst_ptr, ptrdiff_t dst_stride, const uin
 		w, h,
 		dst_stride / sizeof (float),
 		src_stride / sizeof (float),
-		_filter, seed, max_nbr_threads
+		_filter, seed, _draft_flag, max_nbr_threads
 	);
 	proc_sptr->_task_list.resize (nbr_threads);
 
@@ -168,15 +172,18 @@ void	GrainProc::process_plane (uint8_t *dst_ptr, ptrdiff_t dst_stride, const uin
 	_avstp.wait_completion (dispatcher._ptr);
 
 	// Pass 2
-	proc_sptr->_generator.mt_prepare_pass2 ();
-
-	for (int t_cnt = 0; t_cnt < nbr_threads; ++t_cnt)
+	if (! _draft_flag)
 	{
-		auto &      task = proc_sptr->_task_list [t_cnt];
-		task._pass = 2;
-		_avstp.enqueue_task (dispatcher._ptr, &redirect_task, &task);
+		proc_sptr->_generator.mt_prepare_pass2 ();
+
+		for (int t_cnt = 0; t_cnt < nbr_threads; ++t_cnt)
+		{
+			auto &      task = proc_sptr->_task_list [t_cnt];
+			task._pass = 2;
+			_avstp.enqueue_task (dispatcher._ptr, &redirect_task, &task);
+		}
+		_avstp.wait_completion (dispatcher._ptr);
 	}
-	_avstp.wait_completion (dispatcher._ptr);
 
 #endif // Threading variants
 

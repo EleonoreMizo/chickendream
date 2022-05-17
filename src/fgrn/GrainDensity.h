@@ -64,8 +64,8 @@ public:
 	// Alignment in bytes
 	static constexpr int _align = 32;
 
-	void           reset (int w, int h, float grain_radius_avg, float grain_radius_stddev, uint32_t pic_rnd_seed);
-	void           process_area (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride) noexcept;
+	void           reset (int w, int h, float grain_radius_avg, float grain_radius_stddev, uint32_t pic_rnd_seed, bool draft_flag);
+	void           process_area (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride_src, float *dst_ptr, ptrdiff_t stride_dst) noexcept;
 	int64_t        get_load_row (int y) const noexcept;
 	DataGrain      get_result () const noexcept;
 
@@ -91,8 +91,11 @@ private:
 		uint32_t       _rnd_state = 0;
 	};
 
-	void           process_area_fpu (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride) noexcept;
-	void           process_area_simd4 (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride) noexcept;
+	void           process_area_fpu (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride_src, float *dst_ptr, ptrdiff_t stride_dst) noexcept;
+	void           process_area_simd4 (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride_src, float *dst_ptr, ptrdiff_t stride_dst) noexcept;
+
+	void           conv_row_q_to_lum_fpu (int x_beg, float * fstb_RESTRICT lum_ptr, const int32_t * fstb_RESTRICT q_ptr, float inv_lambda_mul) noexcept;
+	void           conv_row_q_to_lum_simd4 (float * fstb_RESTRICT lum_ptr, const int32_t * fstb_RESTRICT q_ptr, float inv_lambda_mul) noexcept;
 
 	static fstb_FORCEINLINE float
 	               process_row_fpu (int32_t * fstb_RESTRICT q_ptr, uint32_t * fstb_RESTRICT seed_ptr, uint32_t pic_rnd_seed, const float * fstb_RESTRICT lum_ptr, int x, int y, float lambda_mul, float eps_val, int w) noexcept;
@@ -119,10 +122,15 @@ private:
 	int            _w = 0;
 	int            _h = 0;
 
+	// Indicates we are in draft mode. In this case, the caller must provide
+	// information for the destination picture in the process_area() call.
+	bool           _draft_flag   = false;
+
 	uint32_t       _pic_rnd_seed = 0;
 
 	// Multiplier for the lambda calculation
-	float          _lambda_mul = -1;
+	float          _lambda_mul     = -1;
+	float          _inv_lambda_mul = -1;
 
 	// Positive value (relative to 1) to avoid div/0 and too large grain amount
 	// for the brightest pixel value.
@@ -132,7 +140,7 @@ private:
 	ptrdiff_t      _stride  = 0;
 
 	void (ThisType::*                   // 0 = not set
-	               _process_area_ptr) (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride) = nullptr;
+	               _process_area_ptr) (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride_src, float *dst_ptr, ptrdiff_t stride_dst) = nullptr;
 
 
 

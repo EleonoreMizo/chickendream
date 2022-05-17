@@ -51,7 +51,7 @@ GrainDensity::GrainDensity (bool simd4_flag)
 
 
 
-void	GrainDensity::reset (int w, int h, float grain_radius_avg, float grain_radius_stddev, uint32_t pic_rnd_seed)
+void	GrainDensity::reset (int w, int h, float grain_radius_avg, float grain_radius_stddev, uint32_t pic_rnd_seed, bool draft_flag)
 {
 	assert (w > 0);
 	assert (h > 0);
@@ -60,6 +60,7 @@ void	GrainDensity::reset (int w, int h, float grain_radius_avg, float grain_radi
 
 	_w = w;
 	_h = h;
+	_draft_flag   = draft_flag;
 	_pic_rnd_seed = pic_rnd_seed;
 	constexpr int  align_pix = _align / sizeof (int32_t);
 	_stride = w & ~(align_pix - 1);
@@ -75,11 +76,12 @@ void	GrainDensity::reset (int w, int h, float grain_radius_avg, float grain_radi
 	// Expected value of a log-norm variable is exp (log_mu + 0.5 * sigma^2)
 	// Expected value for its square is exp (2 * log_mu + 2 * sigma^2)
 	// (found by integrating x^2 * PDF_lognorm(x) from 0 to +inf)
-	_lambda_mul = float (-1.0 / (
-		  fstb::PI
+	const auto     inv_lambda_mul =
+		  -fstb::PI
 		* fstb::sq (grain_radius_avg)
-		* expf (2 * fstb::sq (grain_radius_stddev))
-	));
+		* expf (2 * fstb::sq (grain_radius_stddev));
+	_inv_lambda_mul = float (      inv_lambda_mul);
+	_lambda_mul     = float (1.0 / inv_lambda_mul);
 }
 
 
@@ -89,15 +91,18 @@ void	GrainDensity::reset (int w, int h, float grain_radius_avg, float grain_radi
 // stride is a pixel value.
 // This function supports multiple simultaneous calls, but make sure the
 // processed areas don't overlap.
-void	GrainDensity::process_area (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride) noexcept
+void	GrainDensity::process_area (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride_src, float *dst_ptr, ptrdiff_t stride_dst) noexcept
 {
 	assert (_w > 0);
 	assert (y_beg >= 0);
 	assert (y_beg < y_end);
 	assert (y_end <= _h);
 	assert (lum_ptr != nullptr);
+	assert (dst_ptr != nullptr || ! _draft_flag);
 
-	(this->*_process_area_ptr) (y_beg, y_end, lum_ptr, stride);
+	(this->*_process_area_ptr) (
+		y_beg, y_end, lum_ptr, stride_src, dst_ptr, stride_dst
+	);
 }
 
 
@@ -134,17 +139,19 @@ constexpr double	GrainDensity::_load_mul;
 
 
 
-void	GrainDensity::process_area_fpu (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride) noexcept
+void	GrainDensity::process_area_fpu (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride_src, float *dst_ptr, ptrdiff_t stride_dst) noexcept
 {
 	assert (_w > 0);
 	assert (y_beg >= 0);
 	assert (y_beg < y_end);
 	assert (y_end <= _h);
 	assert (lum_ptr != nullptr);
+	assert (dst_ptr != nullptr || ! _draft_flag);
 
 	int64_t        load_block = 0;
 
-	lum_ptr += y_beg * stride;
+	lum_ptr += y_beg * stride_src;
+	dst_ptr += y_beg * stride_dst;
 	auto           q_ptr    = &_q_arr [y_beg * _stride];
 	auto           seed_ptr = &_seed_arr [y_beg * _stride];
 	for (int y = y_beg; y < y_end; ++y)
@@ -154,12 +161,18 @@ void	GrainDensity::process_area_fpu (int y_beg, int y_end, const float *lum_ptr,
 			0, y, _lambda_mul, _eps_val, _w
 		);
 
+		if (_draft_flag)
+		{
+			conv_row_q_to_lum_fpu (0, dst_ptr, q_ptr, _inv_lambda_mul);
+			dst_ptr += stride_dst;
+		}
+
 		const auto     load_row_int = fstb::round_int64 (load_row * _load_mul);
 		_load_row_arr [y] = load_row_int;
 
 		q_ptr      += _stride;
 		seed_ptr   += _stride;
-		lum_ptr    += stride;
+		lum_ptr    += stride_src;
 		load_block += load_row_int;
 	}
 
@@ -168,13 +181,14 @@ void	GrainDensity::process_area_fpu (int y_beg, int y_end, const float *lum_ptr,
 
 
 
-void	GrainDensity::process_area_simd4 (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride) noexcept
+void	GrainDensity::process_area_simd4 (int y_beg, int y_end, const float *lum_ptr, ptrdiff_t stride_src, float *dst_ptr, ptrdiff_t stride_dst) noexcept
 {
 	assert (_w > 0);
 	assert (y_beg >= 0);
 	assert (y_beg < y_end);
 	assert (y_end <= _h);
 	assert (lum_ptr != nullptr);
+	assert (dst_ptr != nullptr || ! _draft_flag);
 
 	int64_t        load_block = 0;
 
@@ -185,7 +199,8 @@ void	GrainDensity::process_area_simd4 (int y_beg, int y_end, const float *lum_pt
 	const auto     c0123  = fstb::Vu32 (0, 1, 2, 3);
 	const auto     seed_v = fstb::Vu32 (_pic_rnd_seed);
 
-	lum_ptr += y_beg * stride;
+	lum_ptr += y_beg * stride_src;
+	dst_ptr += y_beg * stride_dst;
 	auto           q_ptr    = &_q_arr [y_beg * _stride];
 	auto           seed_ptr = &_seed_arr [y_beg * _stride];
 	for (int y = y_beg; y < y_end; ++y)
@@ -208,16 +223,72 @@ void	GrainDensity::process_area_simd4 (int y_beg, int y_end, const float *lum_pt
 			nx, y, _lambda_mul, _eps_val, _w
 		);
 
+		if (_draft_flag)
+		{
+			conv_row_q_to_lum_simd4 (dst_ptr, q_ptr, _inv_lambda_mul);
+			dst_ptr += stride_dst;
+		}
+
 		const auto     load_row_int = fstb::round_int64 (load_row * _load_mul);
 		_load_row_arr [y] = load_row_int;
 
 		q_ptr      += _stride;
 		seed_ptr   += _stride;
-		lum_ptr    += stride;
+		lum_ptr    += stride_src;
 		load_block += load_row_int;
 	}
 
 	_load_total.fetch_add (load_block);
+}
+
+
+
+void	GrainDensity::conv_row_q_to_lum_fpu (int x_beg, float * fstb_RESTRICT lum_ptr, const int32_t * fstb_RESTRICT q_ptr, float inv_lambda_mul) noexcept
+{
+	assert (_w > 0);
+	assert (x_beg >= 0);
+	assert (x_beg < _w);
+	assert (lum_ptr != nullptr);
+	assert (q_ptr != nullptr);
+
+	for (int x = x_beg; x < _w; ++x)
+	{
+		const auto     q   = q_ptr [x];
+		auto           lum = 1.f - expf (float (q) * inv_lambda_mul);
+		lum = std::max (lum, 0.f);
+		lum_ptr [x] = lum;
+	}
+}
+
+
+
+void	GrainDensity::conv_row_q_to_lum_simd4 (float * fstb_RESTRICT lum_ptr, const int32_t * fstb_RESTRICT q_ptr, float inv_lambda_mul) noexcept
+{
+	assert (_w > 0);
+	assert (lum_ptr != nullptr);
+	assert (q_ptr != nullptr);
+
+	const auto     inv_lambda_mul_log2cst =
+		fstb::Vf32 (inv_lambda_mul * float (1.f / fstb::LN2));
+	const auto     zero   = fstb::Vf32::zero ();
+	const auto     one    = fstb::Vf32 (1.f);
+
+	constexpr int  simd_w = fstb::Vf32::_length;
+	const auto     nx     = _w & ~(simd_w - 1);
+
+	for (int x = 0; x < nx; x += simd_w)
+	{
+		const auto     q   = fstb::Vs32::load (q_ptr + x);
+		const auto     qf  = fstb::ToolsSimd::conv_s32_to_f32 (q);
+		auto           lum = one - exp2 (qf * inv_lambda_mul_log2cst);
+		lum = max (lum, zero);
+		lum.store (lum_ptr + x);
+	}
+
+	if (nx < _w)
+	{
+		conv_row_q_to_lum_fpu (nx, lum_ptr, q_ptr, inv_lambda_mul);
+	}
 }
 
 

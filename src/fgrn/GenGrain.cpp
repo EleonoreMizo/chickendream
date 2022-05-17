@@ -57,22 +57,25 @@ GenGrain::GenGrain (bool simd4_flag, bool avx_flag)
 
 
 
-void	GenGrain::process (float *dst_ptr, const float *src_ptr, int w, int h, ptrdiff_t src_stride, ptrdiff_t dst_stride, const VisionFilter &filter, uint32_t pic_seed)
+void	GenGrain::process (float *dst_ptr, const float *src_ptr, int w, int h, ptrdiff_t src_stride, ptrdiff_t dst_stride, const VisionFilter &filter, uint32_t pic_seed, bool draft_flag)
 {
 	mt_start (
 		dst_ptr, src_ptr,
 		w, h,
 		src_stride, dst_stride,
-		filter, pic_seed, 1
+		filter, pic_seed, draft_flag, 1
 	);
 	mt_proc_pass1 (0);
-	mt_prepare_pass2 ();
-	mt_proc_pass2 (0);
+	if (! draft_flag)
+	{
+		mt_prepare_pass2 ();
+		mt_proc_pass2 (0);
+	}
 }
 
 
 
-int	GenGrain::mt_start (float *dst_ptr, const float *src_ptr, int w, int h, ptrdiff_t src_stride, ptrdiff_t dst_stride, const VisionFilter &filter, uint32_t pic_seed, int max_nbr_threads)
+int	GenGrain::mt_start (float *dst_ptr, const float *src_ptr, int w, int h, ptrdiff_t src_stride, ptrdiff_t dst_stride, const VisionFilter &filter, uint32_t pic_seed, bool draft_flag, int max_nbr_threads)
 {
 	assert (w > 0);
 	assert (h != 0);
@@ -94,7 +97,7 @@ int	GenGrain::mt_start (float *dst_ptr, const float *src_ptr, int w, int h, ptrd
 	_g_rad_mu   = filter.get_grain_radius_avg ();
 	_g_rad_s    = filter.get_grain_radius_stddev ();
 
-	_density.reset (w, h, _g_rad_mu, _g_rad_s, pic_seed);
+	_density.reset (w, h, _g_rad_mu, _g_rad_s, pic_seed, draft_flag);
 
 	_nbr_threads = std::min (max_nbr_threads, h);
 	_ctx_arr.resize (_nbr_threads);
@@ -119,7 +122,11 @@ void	GenGrain::mt_proc_pass1 (int idx)
 	assert (idx < _nbr_threads);
 
 	auto &         ctx = _ctx_arr [idx];
-	_density.process_area (ctx._y_beg, ctx._y_end, _src_ptr, _src_stride);
+	_density.process_area (
+		ctx._y_beg, ctx._y_end,
+		_src_ptr, _src_stride,
+		_dst_ptr, _dst_stride
+	);
 }
 
 

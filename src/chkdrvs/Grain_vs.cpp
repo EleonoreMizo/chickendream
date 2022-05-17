@@ -81,6 +81,7 @@ Grain::Grain (const ::VSMap &in, ::VSMap &out, void *user_data_ptr, ::VSCore &co
 	const auto     seed    = uint32_t (get_arg_int (in, out, "seed" , 12345));
 	const auto     cf_flag = (get_arg_int (in, out, "cf", 0) != 0);
 	const auto     cp_flag = (get_arg_int (in, out, "cp", 0) != 0);
+	const auto     draft_flag = (get_arg_int (in, out, "draft", 0) != 0);
 
 	if (! chkdr::GrainProc::check_sigma (sigma))
 	{
@@ -100,7 +101,8 @@ Grain::Grain (const ::VSMap &in, ::VSMap &out, void *user_data_ptr, ::VSCore &co
 	}
 
 	_proc_uptr = std::make_unique <chkdr::GrainProc> (
-		sigma, res, rad, dev, seed, cf_flag, cp_flag, simd4_flag, avx_flag
+		sigma, res, rad, dev, seed, cf_flag, cp_flag, draft_flag,
+		simd4_flag, avx_flag
 	);
 }
 

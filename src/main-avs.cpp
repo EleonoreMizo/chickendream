@@ -35,9 +35,9 @@ const char * __stdcall	AvisynthPluginInit3 (::IScriptEnvironment *env_ptr, const
 	AVS_linkage = vectors_ptr;
 
 	env_ptr->AddFunction (chkdravs_GRAIN,
-		"c"         "[sigma]f" "[res]i" "[rad]f" //  0
-		"[dev]f"    "[seed]i"  "[cf]b"  "[cp]b"  //  4
-		"[cpuopt]i"
+		"c"         "[sigma]f"  "[res]i" "[rad]f" //  0
+		"[dev]f"    "[seed]i"   "[cf]b"  "[cp]b"  //  4
+		"[draft]b"  "[cpuopt]i"
 		, &main_avs_create <chkdravs::Grain>, nullptr
 	);
 

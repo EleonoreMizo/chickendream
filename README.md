@@ -9,7 +9,7 @@ This plug-in implements a realistic film grain generator described in the follow
 
 ![Example: original / with mild grain / with insanely huge grain](doc/grain.png "Example: original / with mild grain / with insanely huge grain")
 
-Warning: the algorithm is very slow and can take several seconds (multi-threaded) for a single FHD frame.
+Warning: the algorithm is very slow and can take several seconds (multi-threaded) for a single FHD frame. However, in some conditions, the draft mode can be a good compromise between speed and model accuracy.
 
 The generated grain is quite significant, but you can blend the output with the input picture to attenuate the effect.
 
@@ -68,5 +68,7 @@ fmtc_transfer (transs="linear", transd="srgb")
 * **`cf`** (False): Indicates that the seed is kept constant for all the frames.
 
 * **`cp`** (False): Indicates that the seed is kept constant for all the planes of a single frame. This may slightly reduce the “colored noise” effect on RGB pictures, depending on the content.
+
+* **`draft`** (False): Enables the draft mode, much faster to render, but giving meaningful results only for a small subset of the parameter combinations. Implicitely sets `sigma` to 0, and works correctly with the same conditions (low `rad` and `dev`).
 
 * **`cpuopt`** (-1): 0 = no specific CPU optimisation, 1 = SSE2, 7 = AVX, -1 = maximum available optimisations on the host hardware.

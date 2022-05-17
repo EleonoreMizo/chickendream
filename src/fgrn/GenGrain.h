@@ -13,6 +13,7 @@ Usage for the multi-threaded interface:
 - mt_start (), returns the actual number of threads N
 - In parallel: N times mt_proc_pass1 (i)
 - Wait for all the threads to finish + fence
+Then, when not in draft mode:
 - mt_prepare_pass2 ()
 - In parallel: N times mt_proc_pass2 (i)
 - Wait for all the threads to finish + fence
@@ -81,10 +82,10 @@ public:
 	explicit       GenGrain (bool simd4_flag, bool avx_flag);
 
 	// Single thread interface
-	void           process (float *dst_ptr, const float *src_ptr, int w, int h, ptrdiff_t src_stride, ptrdiff_t dst_stride, const VisionFilter &filter, uint32_t pic_seed);
+	void           process (float *dst_ptr, const float *src_ptr, int w, int h, ptrdiff_t src_stride, ptrdiff_t dst_stride, const VisionFilter &filter, uint32_t pic_seed, bool draft_flag);
 
 	// Multi-thread interface
-	int            mt_start (float *dst_ptr, const float *src_ptr, int w, int h, ptrdiff_t src_stride, ptrdiff_t dst_stride, const VisionFilter &filter, uint32_t pic_seed, int max_nbr_threads);
+	int            mt_start (float *dst_ptr, const float *src_ptr, int w, int h, ptrdiff_t src_stride, ptrdiff_t dst_stride, const VisionFilter &filter, uint32_t pic_seed, bool draft_flag, int max_nbr_threads);
 	void           mt_proc_pass1 (int idx);
 	void           mt_prepare_pass2 ();
 	void           mt_proc_pass2 (int idx);
