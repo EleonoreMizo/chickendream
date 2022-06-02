@@ -15,8 +15,8 @@ http://www.wtfpl.net/ for more details.
 
 
 
-#if ! defined (fstb_VectS32_CODEHEADER_INCLUDED)
-#define fstb_VectS32_CODEHEADER_INCLUDED
+#if ! defined (fstb_Vs32_CODEHEADER_INCLUDED)
+#define fstb_Vs32_CODEHEADER_INCLUDED
 
 
 
@@ -329,12 +329,12 @@ Vs32 &	Vs32::operator >>= (int imm) noexcept
 Vs32	Vs32::operator - () const noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return { {
+	return Vs32 {
 		-_x [0],
 		-_x [1],
 		-_x [2],
 		-_x [3]
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	return _mm_sub_epi32 (_mm_setzero_si128 (), _x);
 #elif fstb_ARCHI == fstb_ARCHI_ARM
@@ -347,12 +347,12 @@ Vs32	Vs32::operator - () const noexcept
 Vs32 	Vs32::operator ~ () const noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { {
+	return Vs32 {
 		~(_x [0]),
 		~(_x [1]),
 		~(_x [2]),
 		~(_x [3])
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	return _mm_xor_si128 (_x, _mm_set1_epi32 (-1));
 #elif fstb_ARCHI == fstb_ARCHI_ARM
@@ -365,12 +365,12 @@ Vs32 	Vs32::operator ~ () const noexcept
 Vs32	Vs32::is_lt_0 () const noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { {
+	return Vs32 {
 		(_x [0] < 0) ? -1 : 0,
 		(_x [1] < 0) ? -1 : 0,
 		(_x [2] < 0) ? -1 : 0,
 		(_x [3] < 0) ? -1 : 0
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	return _mm_cmplt_epi32 (_x, _mm_setzero_si128 ());
 #elif fstb_ARCHI == fstb_ARCHI_ARM
@@ -383,7 +383,7 @@ Vs32	Vs32::is_lt_0 () const noexcept
 Vs32	Vs32::reverse () const noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return { { _x [3], _x [2], _x [1], _x [0] } };
+	return Vs32 { _x [3], _x [2], _x [1], _x [0] };
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	return _mm_shuffle_epi32 (_x, (3<<0) + (2<<2) + (1<<4) + (0<<6));
 #elif fstb_ARCHI == fstb_ARCHI_ARM
@@ -398,12 +398,12 @@ template <int SHIFT>
 Vs32	Vs32::rotate () const noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return { {
+	return Vs32 {
 		_x [(0 - SHIFT) & 3],
 		_x [(1 - SHIFT) & 3],
 		_x [(2 - SHIFT) & 3],
 		_x [(3 - SHIFT) & 3]
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	switch (SHIFT & 3)
 	{
@@ -477,29 +477,6 @@ Vs32	Vs32::spread () const noexcept
 	return _mm_shuffle_epi32 (_x, 0x55 * (POS & 3));
 #elif fstb_ARCHI == fstb_ARCHI_ARM
 	return vdupq_n_s32 (vgetq_lane_s32 (_x, POS & 3));
-#endif // fstb_ARCHI
-}
-
-
-
-std::tuple <int32_t, int32_t, int32_t, int32_t>	Vs32::explode () const noexcept
-{
-#if ! defined (fstb_HAS_SIMD)
-	return std::make_tuple (_x [0], _x [1], _x [2], _x [3]);
-#elif fstb_ARCHI == fstb_ARCHI_X86
-	return std::make_tuple (
-		int32_t (_mm_cvtsi128_si32 (_x                            )),
-		int32_t (_mm_cvtsi128_si32 (_mm_shuffle_epi32 (_x, (1<<0)))),
-		int32_t (_mm_cvtsi128_si32 (_mm_shuffle_epi32 (_x, (2<<0)))),
-		int32_t (_mm_cvtsi128_si32 (_mm_shuffle_epi32 (_x, (3<<0))))
-	);
-#elif fstb_ARCHI == fstb_ARCHI_ARM
-	return std::make_tuple (
-		vgetq_lane_s32 (_x, 0),
-		vgetq_lane_s32 (_x, 1),
-		vgetq_lane_s32 (_x, 2),
-		vgetq_lane_s32 (_x, 3)
-	);
 #endif // fstb_ARCHI
 }
 
@@ -681,7 +658,7 @@ int	Vs32::count_bits () const noexcept
 Vs32	Vs32::zero () noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { { 0, 0, 0, 0 } };
+	return Vs32 { 0, 0, 0, 0 };
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	return _mm_setzero_si128 ();
 #elif fstb_ARCHI == fstb_ARCHI_ARM
@@ -699,9 +676,9 @@ Vs32	Vs32::compose (Vs32 a, Vs32 b) noexcept
 #if ! defined (fstb_HAS_SIMD)
 	switch (POS & 3)
 	{
-	case 1:  return { { a._x [1], a._x [2], a._x [3], b._x [0] } };
-	case 2:  return { { a._x [2], a._x [3], b._x [0], b._x [1] } };
-	case 3:  return { { a._x [3], b._x [0], b._x [1], b._x [2] } };
+	case 1:  return Vs32 { a._x [1], a._x [2], a._x [3], b._x [0] };
+	case 2:  return Vs32 { a._x [2], a._x [3], b._x [0], b._x [1] };
+	case 3:  return Vs32 { a._x [3], b._x [0], b._x [1], b._x [2] };
 	default: return a;
 	}
 	return a;
@@ -850,12 +827,12 @@ Vs32 operator >> (Vs32 lhs, T rhs) noexcept
 Vs32 operator == (const Vs32 &lhs, const Vs32 &rhs) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { {
+	return Vs32 {
 		(lhs._x [0] == rhs._x [0]) ? -1 : 0,
 		(lhs._x [1] == rhs._x [1]) ? -1 : 0,
 		(lhs._x [2] == rhs._x [2]) ? -1 : 0,
 		(lhs._x [3] == rhs._x [3]) ? -1 : 0
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	return _mm_cmpeq_epi32 (lhs, rhs);
 #elif fstb_ARCHI == fstb_ARCHI_ARM
@@ -868,12 +845,12 @@ Vs32 operator == (const Vs32 &lhs, const Vs32 &rhs) noexcept
 Vs32 operator != (const Vs32 &lhs, const Vs32 &rhs) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { {
+	return Vs32 {
 		(lhs._x [0] != rhs._x [0]) ? -1 : 0,
 		(lhs._x [1] != rhs._x [1]) ? -1 : 0,
 		(lhs._x [2] != rhs._x [2]) ? -1 : 0,
 		(lhs._x [3] != rhs._x [3]) ? -1 : 0
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	const auto     eq = _mm_cmpeq_epi32 (lhs, rhs);
 	return _mm_xor_si128 (eq, _mm_set1_epi32 (-1));
@@ -887,12 +864,12 @@ Vs32 operator != (const Vs32 &lhs, const Vs32 &rhs) noexcept
 Vs32 operator <  (const Vs32 &lhs, const Vs32 &rhs) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { {
+	return Vs32 {
 		(lhs._x [0] < rhs._x [0]) ? -1 : 0,
 		(lhs._x [1] < rhs._x [1]) ? -1 : 0,
 		(lhs._x [2] < rhs._x [2]) ? -1 : 0,
 		(lhs._x [3] < rhs._x [3]) ? -1 : 0
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	return _mm_cmplt_epi32 (lhs, rhs);
 #elif fstb_ARCHI == fstb_ARCHI_ARM
@@ -905,12 +882,12 @@ Vs32 operator <  (const Vs32 &lhs, const Vs32 &rhs) noexcept
 Vs32 operator <= (const Vs32 &lhs, const Vs32 &rhs) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { {
+	return Vs32 {
 		(lhs._x [0] <= rhs._x [0]) ? -1 : 0,
 		(lhs._x [1] <= rhs._x [1]) ? -1 : 0,
 		(lhs._x [2] <= rhs._x [2]) ? -1 : 0,
 		(lhs._x [3] <= rhs._x [3]) ? -1 : 0
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 # if 1
 	return (lhs < rhs) | (lhs == rhs);
@@ -927,12 +904,12 @@ Vs32 operator <= (const Vs32 &lhs, const Vs32 &rhs) noexcept
 Vs32 operator >  (const Vs32 &lhs, const Vs32 &rhs) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { {
+	return Vs32 {
 		(lhs._x [0] > rhs._x [0]) ? -1 : 0,
 		(lhs._x [1] > rhs._x [1]) ? -1 : 0,
 		(lhs._x [2] > rhs._x [2]) ? -1 : 0,
 		(lhs._x [3] > rhs._x [3]) ? -1 : 0
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	return _mm_cmpgt_epi32 (lhs, rhs);
 #elif fstb_ARCHI == fstb_ARCHI_ARM
@@ -945,12 +922,12 @@ Vs32 operator >  (const Vs32 &lhs, const Vs32 &rhs) noexcept
 Vs32 operator >= (const Vs32 &lhs, const Vs32 &rhs) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { {
+	return Vs32 {
 		(lhs._x [0] >= rhs._x [0]) ? -1 : 0,
 		(lhs._x [1] >= rhs._x [1]) ? -1 : 0,
 		(lhs._x [2] >= rhs._x [2]) ? -1 : 0,
 		(lhs._x [3] >= rhs._x [3]) ? -1 : 0
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 # if 1
 	return (lhs > rhs) | (lhs == rhs);
@@ -968,12 +945,12 @@ Vs32 operator >= (const Vs32 &lhs, const Vs32 &rhs) noexcept
 Vs32 abs (const Vs32 &v) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return Vs32 { {
+	return Vs32 {
 		std::abs (v._x [0]),
 		std::abs (v._x [1]),
 		std::abs (v._x [2]),
 		std::abs (v._x [3])
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	const auto     v_neg = _mm_sub_epi32 (_mm_setzero_si128 (), v);
 	return max (v, v_neg);
@@ -987,12 +964,12 @@ Vs32 abs (const Vs32 &v) noexcept
 Vs32 min (const Vs32 &lhs, const Vs32 &rhs) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return { {
+	return Vs32 {
 		std::min (lhs._x [0], rhs._x [0]),
 		std::min (lhs._x [1], rhs._x [1]),
 		std::min (lhs._x [2], rhs._x [2]),
 		std::min (lhs._x [3], rhs._x [3])
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	const auto     gt = (lhs > rhs);
 	return _mm_or_si128 (
@@ -1009,12 +986,12 @@ Vs32 min (const Vs32 &lhs, const Vs32 &rhs) noexcept
 Vs32 max (const Vs32 &lhs, const Vs32 &rhs) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
-	return { {
+	return Vs32 {
 		std::max (lhs._x [0], rhs._x [0]),
 		std::max (lhs._x [1], rhs._x [1]),
 		std::max (lhs._x [2], rhs._x [2]),
 		std::max (lhs._x [3], rhs._x [3])
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	const auto     lt = (lhs < rhs);
 	return _mm_or_si128 (
@@ -1039,12 +1016,12 @@ Vs32 select (const Vs32 &cond, const Vs32 &v_t, const Vs32 &v_f) noexcept
 {
 #if ! defined (fstb_HAS_SIMD)
 	/*** To do: implement as r = v_f ^ ((v_f ^ v_t) & cond) ***/
-	return Vs32 { {
+	return Vs32 {
 		(cond._x [0] & v_t._x [0]) | (~cond._x [0] & v_f._x [0]),
 		(cond._x [1] & v_t._x [1]) | (~cond._x [1] & v_f._x [1]),
 		(cond._x [2] & v_t._x [2]) | (~cond._x [2] & v_f._x [2]),
 		(cond._x [3] & v_t._x [3]) | (~cond._x [3] & v_f._x [3])
-	} };
+	};
 #elif fstb_ARCHI == fstb_ARCHI_X86
 	const auto     cond_1 = _mm_and_si128 (cond, v_t);
 	const auto     cond_0 = _mm_andnot_si128 (cond, v_f);
@@ -1085,7 +1062,7 @@ std::tuple <Vs32, Vs32> swap_if (const Vs32 &cond, Vs32 lhs, Vs32 rhs) noexcept
 
 
 
-#endif   // fstb_VectS32_CODEHEADER_INCLUDED
+#endif   // fstb_Vs32_CODEHEADER_INCLUDED
 
 
 
