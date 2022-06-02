@@ -15,7 +15,7 @@
 
 <table class="n">
 <tr><td class="n"><b>Authors:     </b></td><td class="n">&nbsp;</td><td class="n">Firesledge (aka Cretindesalpes)</td></tr>
-<tr><td class="n"><b>Version:     </b></td><td class="n">&nbsp;</td><td class="n">r1</td></tr>
+<tr><td class="n"><b>Version:     </b></td><td class="n">&nbsp;</td><td class="n">r2</td></tr>
 <tr><td class="n"><b>Download:    </b></td><td class="n">&nbsp;</td><td class="n"><a href="http://ldesoras.free.fr/prod.html#src_chickendream">http://ldesoras.free.fr/prod.html</a></td></tr>
 <tr><td class="n"><b>Category:    </b></td><td class="n">&nbsp;</td><td class="n">Artistic effect</td></tr>
 <tr><td class="n"><b>Requirements:</b></td><td class="n">&nbsp;</td><td class="n"><a href="http://www.vapoursynth.com/">Vapoursynth r55</a> or <a href="https://avs-plus.net/">Avisynth+ 3.7.0</a></td></tr>
@@ -73,7 +73,11 @@ If you want to emulate a S-shaped film curve too, do it before adding
 grain.</p>
 
 <p>If the generated grain is too strong for your taste, you can blend the
-filter output with the input picture to attenuate the effect.</p>
+filter output with the input picture to attenuate the effect.
+Another thing to consider: only the impression on the negative (main capture)
+is emulated.
+You may want to add additional layers of grain caused by the positive or
+any other stage of replication or montage.</p>
 
 <p>Warning: the algorithm is very slow and can take several seconds
 (multi-threaded) for a single FHD frame.
@@ -356,7 +360,7 @@ issue</a> on Github repository for the project.</p>
 
 <h2><a id="changelog"></a>V) Changelog</h2>
 
-<p><b>r2, 202x-xx-xx</b></p>
+<p><b>r2, 2022-06-02</b></p>
 <ul>
 <li>Allowed larger grain radius when using large standard deivation values.</li>
 <li>Added a <var>draft</var> parameter.</li>
