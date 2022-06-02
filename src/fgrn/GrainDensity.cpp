@@ -63,7 +63,7 @@ void	GrainDensity::reset (int w, int h, float grain_radius_avg, float grain_radi
 	_draft_flag   = draft_flag;
 	_pic_rnd_seed = pic_rnd_seed;
 	constexpr int  align_pix = _align / sizeof (int32_t);
-	_stride = w & ~(align_pix - 1);
+	_stride = (w + align_pix - 1) & ~(align_pix - 1);
 	const auto     len = size_t (_stride * h);
 	_q_arr.resize (len);
 	_load_row_arr.resize (h);
