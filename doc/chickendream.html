@@ -211,7 +211,8 @@ make install</pre>
 <p>You can add some options to the <code>configure</code> command:</p>
 <ul>
 <li><code>--enable-debug</code> to activate debugging code</li>
-<li><code>--enable-clang</code> to use Clang instead of the default compiler which is usually GCC</li>
+<li><code>CXX='clang++' CC='clang'</code> to use Clang instead of the default
+compiler which is usually GCC</li>
 </ul>
 <p>Only the Vapoursynth plug-in can be built in the GNU-based environment.</p>
 
@@ -359,6 +360,7 @@ issue</a> on Github repository for the project.</p>
 <ul>
 <li>Allowed larger grain radius when using large standard deivation values.</li>
 <li>Added a <var>draft</var> parameter.</li>
+<li>Changed the <code>configure</<code> options to compile with Clang.</li>
 <li>Fixed a crash when the picture width is not a multiple of 8.</li>
 </ul>
 
