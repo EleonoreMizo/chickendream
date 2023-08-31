@@ -1,4 +1,14 @@
-﻿ChickenDream: film grain generator
+### We have moved!
+
+**This page is now dead, there will not be any update anymore.**
+
+**The new page is hosted here: https://gitlab.com/eleonoremizo1/chickendream/**  
+**Git repository address: https://gitlab.com/eleonoremizo1/chickendream.git**
+
+Please update your bookmarks! Repository is kept here for consistency with other projects but probably not indefinitely.
+
+
+ChickenDream: film grain generator
 ==================================
 
 Plug-in for Vapoursynth and Avisynth+
